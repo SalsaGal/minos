@@ -1,4 +1,5 @@
-const uefi = @import("std").os.uefi;
+const std = @import("std");
+const uefi = std.os.uefi;
 const string = @import("string.zig");
 
 pub var con_out: *uefi.protocols.SimpleTextOutputProtocol = undefined;
