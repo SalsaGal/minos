@@ -7,7 +7,9 @@ pub fn main() void {
     con_out = uefi.system_table.con_out.?;
     _ = con_out.reset(false);
 
+    string.println("Foo");
     string.print("Foo");
+    string.println("Foo");
 
     _ = uefi.system_table.boot_services.?.stall(5_000_000);
 }
