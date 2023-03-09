@@ -1,8 +1,13 @@
 const boot = @import("boot.zig");
+const fmt = @import("std").fmt;
 
 pub const Str16 = struct {
     chars: [:0]const u16,
 };
+
+pub fn fprint(str: []u8, comptime format: []const u8, args: var) void {
+    print(fmt.bufPrint(buf, format, args) catch unreachable);
+}
 
 pub fn print(str: [:0]const u8) void {
     for (str) |c| {
