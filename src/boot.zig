@@ -16,6 +16,7 @@ pub fn main() void {
         _ = boot_services.stall(5_000_000);
         return;
     }
+    var frame_buffer: [*]u8 = @intToPtr([*]u8, graphics.mode.frame_buffer_base);
 
     var memory_map: [*]uefi.tables.MemoryDescriptor = undefined;
     var memory_map_size: usize = 0;
@@ -32,6 +33,12 @@ pub fn main() void {
         print("Failed to exit boot services\r\n");
         _ = boot_services.stall(5_000_000);
         return;
+    }
+
+    var i: u32 = 0;
+    while (i < 640 * 480 * 4) : (i += 4) {
+        frame_buffer[i + 2] = @truncate(u8, i % 480);
+        frame_buffer[i + 1] = @truncate(u8, i / 480);
     }
 
     while (true) {}
