@@ -20,7 +20,14 @@ pub fn main() void {
             return;
         }
     }
-    _ = boot_services.stall(5_000_000);
+
+    if (boot_services.exitBootServices(uefi.handle, memory_map_key) != uefi.Status.Success) {
+        print("Failed to exit boot services\r\n");
+        _ = boot_services.stall(5_000_000);
+        return;
+    }
+
+    while (true) {}
 }
 
 fn print(str: []const u8) void {
