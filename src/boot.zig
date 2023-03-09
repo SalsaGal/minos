@@ -27,9 +27,15 @@ pub fn main() void {
     }
 
     var buf: [0xffff]u8 = undefined;
-    var i: usize = 0;
-    string.printf(buf[0..], "Memory Descriptors: {d}\r\n", .{memory_map_size / descriptor_size});
-    while (i < memory_map_size / descriptor_size) : (i += 1) {}
+    string.printf(buf[0..], "Memory Descriptors:        {d}\r\n", .{memory_map_size / descriptor_size});
+    string.printf(buf[0..], "Memory Map Key:            {d}\r\n", .{memory_map_key});
 
-    _ = uefi.system_table.boot_services.?.stall(5_000_000);
+    const exit_status = boot_services.exitBootServices(uefi.handle, memory_map_key);
+    if (exit_status != uefi.Status.Success) {
+        string.printf(buf[0..], "Exit boot services failed  {any}\r\n", .{exit_status});
+        _ = boot_services.stall(10_000_000);
+        return;
+    }
+
+    while (true) {}
 }
