@@ -9,6 +9,8 @@ pub fn main() void {
     const boot_services = uefi.system_table.boot_services.?;
     _ = con_out.reset(false);
 
+    string.println("MinOS starting");
+
     // Load memory map
     var memory_map: [*]uefi.tables.MemoryDescriptor = undefined;
     var memory_map_size: usize = 0;
@@ -23,6 +25,11 @@ pub fn main() void {
             return;
         }
     }
+
+    var buf: [0xffff]u8 = undefined;
+    var i: usize = 0;
+    string.printf(buf[0..], "Memory Descriptors: {d}\r\n", .{memory_map_size / descriptor_size});
+    while (i < memory_map_size / descriptor_size) : (i += 1) {}
 
     _ = uefi.system_table.boot_services.?.stall(5_000_000);
 }
