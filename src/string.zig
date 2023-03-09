@@ -5,7 +5,7 @@ pub const Str16 = struct {
     chars: [:0]const u16,
 };
 
-pub fn fprint(str: []u8, comptime format: []const u8, args: var) void {
+pub fn printf(str: []u8, comptime format: []const u8, args: var) void {
     print(fmt.bufPrint(buf, format, args) catch unreachable);
 }
 
