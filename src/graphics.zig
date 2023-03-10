@@ -27,19 +27,27 @@ pub fn Vec2(comptime T: type) type {
         x: T,
         y: T,
 
-        pub fn display(self: *Self, buf: []u8) []const u8 {
+        pub fn display(self: *const Self, buf: []u8) []const u8 {
             return std.fmt.bufPrint(buf, "({d},{d})", .{ self.x, self.y }) catch unreachable;
         }
+
+        pub fn index(self: *const Self) u32 {
+            return 4 * (self.x % frame_size.x + self.y / frame_size.y);
+        }
     };
+}
+
+pub fn setPixel(index: usize, color: Color) void {
+    frame_buffer[index] = color.b;
+    frame_buffer[index + 1] = color.g;
+    frame_buffer[index + 2] = color.r;
+    frame_buffer[index + 3] = color.a;
 }
 
 pub fn clear(color: Color) void {
     var i: usize = 0;
     while (i < frame_size.x * frame_size.y * 4) : (i += 4) {
-        frame_buffer[i] = color.b;
-        frame_buffer[i + 1] = color.g;
-        frame_buffer[i + 2] = color.r;
-        frame_buffer[i + 3] = color.a;
+        setPixel(i, color);
     }
 }
 
