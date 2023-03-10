@@ -41,8 +41,10 @@ pub fn main() void {
     }
 
     var i: u32 = 0;
-    while (i < 640 * 480 * 4) : (i += 4) {
-        frame_buffer[i] = frame_buffer[i];
+    while (i < frame_width * frame_height * 4) : (i += 4) {
+        frame_buffer[i] = 0;
+        frame_buffer[i + 1] = 0;
+        frame_buffer[i + 2] = 0;
     }
 
     while (true) {}
