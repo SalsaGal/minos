@@ -19,7 +19,7 @@ pub fn main() void {
         return;
     }
 
-    printf(&buffer, "Frame: {d},{d}\r\n", .{ graphics.frame_width, graphics.frame_height });
+    printf(&buffer, "Frame: {any}\r\n", .{graphics.frame_size});
 
     var memory_map: [*]uefi.tables.MemoryDescriptor = undefined;
     var memory_map_size: usize = 0;
