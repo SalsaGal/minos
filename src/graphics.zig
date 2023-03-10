@@ -7,6 +7,13 @@ pub var graphics: *uefi.protocols.GraphicsOutputProtocol = undefined;
 pub var frame_buffer: [*]u8 = undefined;
 pub var frame_size: Vec2(u32) = undefined;
 
+pub const Color = struct {
+    r: u8 = 0,
+    b: u8 = 0,
+    g: u8 = 0,
+    a: u8 = 0,
+};
+
 pub fn Vec2(comptime T: type) type {
     return struct {
         const Self = @This();
@@ -18,6 +25,16 @@ pub fn Vec2(comptime T: type) type {
             return std.fmt.bufPrint(buf, "({d},{d})", .{ self.x, self.y }) catch unreachable;
         }
     };
+}
+
+pub fn clear(color: Color) void {
+    var i: usize = 0;
+    while (i < frame_size.x * frame_size.y * 4) : (i += 4) {
+        frame_buffer[i] = color.b;
+        frame_buffer[i + 1] = color.g;
+        frame_buffer[i + 2] = color.r;
+        frame_buffer[i + 3] = color.a;
+    }
 }
 
 pub fn init(boot_services: *uefi.tables.BootServices) uefi.Status {

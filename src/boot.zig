@@ -39,6 +39,8 @@ pub fn main() void {
         return;
     }
 
+    graphics.clear(graphics.Color{});
+
     while (true) {}
 }
 
