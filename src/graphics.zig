@@ -11,7 +11,13 @@ pub const Color = struct {
     r: u8 = 0,
     b: u8 = 0,
     g: u8 = 0,
-    a: u8 = 0,
+    a: u8 = 255,
+
+    pub const BLACK = Color{};
+    pub const WHITE = Color{ .r = 255, .g = 255, .b = 255 };
+    pub const RED = Color{ .r = 255 };
+    pub const GREEN = Color{ .g = 255 };
+    pub const BLUE = Color{ .b = 255 };
 };
 
 pub fn Vec2(comptime T: type) type {

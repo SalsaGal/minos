@@ -39,7 +39,7 @@ pub fn main() void {
         return;
     }
 
-    graphics.clear(graphics.Color{});
+    graphics.clear(graphics.Color.RED);
 
     while (true) {}
 }
