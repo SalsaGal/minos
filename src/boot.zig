@@ -1,9 +1,9 @@
 const std = @import("std");
 const uefi = std.os.uefi;
 
+const graphics = @import("graphics.zig");
+
 var con_out: *uefi.protocols.SimpleTextOutputProtocol = undefined;
-var graphics: *uefi.protocols.GraphicsOutputProtocol = undefined;
-var frame_buffer: [*]u8 = undefined;
 var buffer: [0xff]u8 = undefined;
 
 pub fn main() void {
@@ -13,16 +13,13 @@ pub fn main() void {
     _ = con_out.reset(false);
     print("MinOS Started\r\n");
 
-    if (boot_services.locateProtocol(&uefi.protocols.GraphicsOutputProtocol.guid, null, @ptrCast(*?*anyopaque, &graphics)) != uefi.Status.Success) {
+    if (graphics.init(boot_services) != uefi.Status.Success) {
         print("Failed to start graphics");
         _ = boot_services.stall(5_000_000);
         return;
     }
-    const frame_width = graphics.mode.info.horizontal_resolution;
-    const frame_height = graphics.mode.info.vertical_resolution;
-    frame_buffer = @intToPtr([*]u8, graphics.mode.frame_buffer_base);
 
-    printf(&buffer, "Frame: {d},{d}\r\n", .{ frame_width, frame_height });
+    printf(&buffer, "Frame: {d},{d}\r\n", .{ graphics.frame_width, graphics.frame_height });
 
     var memory_map: [*]uefi.tables.MemoryDescriptor = undefined;
     var memory_map_size: usize = 0;
