@@ -9,8 +9,14 @@ pub var frame_size: Vec2(u32) = undefined;
 
 pub fn Vec2(comptime T: type) type {
     return struct {
+        const Self = @This();
+
         x: T,
         y: T,
+
+        pub fn display(self: *Self, buf: []u8) []const u8 {
+            return std.fmt.bufPrint(buf, "({d},{d})", .{ self.x, self.y }) catch unreachable;
+        }
     };
 }
 

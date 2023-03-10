@@ -19,7 +19,8 @@ pub fn main() void {
         return;
     }
 
-    printf(&buffer, "Frame: {any}\r\n", .{graphics.frame_size});
+    print("Frame size: ");
+    print(graphics.frame_size.display(&buffer));
 
     var memory_map: [*]uefi.tables.MemoryDescriptor = undefined;
     var memory_map_size: usize = 0;
