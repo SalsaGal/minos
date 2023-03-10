@@ -3,6 +3,7 @@ const uefi = std.os.uefi;
 
 var con_out: *uefi.protocols.SimpleTextOutputProtocol = undefined;
 var graphics: *uefi.protocols.GraphicsOutputProtocol = undefined;
+var frame_buffer: [*]u8 = undefined;
 var buffer: [0xff]u8 = undefined;
 
 pub fn main() void {
@@ -19,7 +20,7 @@ pub fn main() void {
     }
     const frame_width = graphics.mode.info.horizontal_resolution;
     const frame_height = graphics.mode.info.vertical_resolution;
-    var frame_buffer: [*]u8 = @intToPtr([*]u8, graphics.mode.frame_buffer_base);
+    frame_buffer = @intToPtr([*]u8, graphics.mode.frame_buffer_base);
 
     printf(&buffer, "Frame: {d},{d}\r\n", .{ frame_width, frame_height });
 
@@ -38,13 +39,6 @@ pub fn main() void {
         print("Failed to exit boot services\r\n");
         _ = boot_services.stall(5_000_000);
         return;
-    }
-
-    var i: u32 = 0;
-    while (i < frame_width * frame_height * 4) : (i += 4) {
-        frame_buffer[i] = 0;
-        frame_buffer[i + 1] = 0;
-        frame_buffer[i + 2] = 0;
     }
 
     while (true) {}
