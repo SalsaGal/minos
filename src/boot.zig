@@ -3,6 +3,7 @@ const uefi = std.os.uefi;
 
 var con_out: *uefi.protocols.SimpleTextOutputProtocol = undefined;
 var graphics: *uefi.protocols.GraphicsOutputProtocol = undefined;
+var buffer: [0xff]u8 = undefined;
 
 pub fn main() void {
     const boot_services = uefi.system_table.boot_services.?;
@@ -16,7 +17,11 @@ pub fn main() void {
         _ = boot_services.stall(5_000_000);
         return;
     }
+    const frame_width = graphics.mode.info.horizontal_resolution;
+    const frame_height = graphics.mode.info.vertical_resolution;
     var frame_buffer: [*]u8 = @intToPtr([*]u8, graphics.mode.frame_buffer_base);
+
+    printf(&buffer, "Frame: {d},{d}\r\n", .{ frame_width, frame_height });
 
     var memory_map: [*]uefi.tables.MemoryDescriptor = undefined;
     var memory_map_size: usize = 0;
@@ -37,11 +42,14 @@ pub fn main() void {
 
     var i: u32 = 0;
     while (i < 640 * 480 * 4) : (i += 4) {
-        frame_buffer[i + 2] = @truncate(u8, i % 480);
-        frame_buffer[i + 1] = @truncate(u8, i / 480);
+        frame_buffer[i] = frame_buffer[i];
     }
 
     while (true) {}
+}
+
+fn printf(buf: []u8, comptime format: []const u8, args: anytype) void {
+    print(std.fmt.bufPrint(buf, format, args) catch unreachable);
 }
 
 fn print(str: []const u8) void {
