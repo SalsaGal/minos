@@ -1,6 +1,7 @@
 const std = @import("std");
 const uefi = std.os.uefi;
 
+const file = @import("file.zig");
 const graphics = @import("graphics.zig");
 
 var con_out: *uefi.protocols.SimpleTextOutputProtocol = undefined;
@@ -22,6 +23,12 @@ pub fn main() void {
     print("Frame size: ");
     print(graphics.frame_size.display(&buffer));
 
+    if (file.init(boot_services) != uefi.Status.Success) {
+        print("Failed to start file system");
+        _ = boot_services.stall(5_000_000);
+        return;
+    }
+
     var memory_map: [*]uefi.tables.MemoryDescriptor = undefined;
     var memory_map_size: usize = 0;
     var memory_map_key: usize = undefined;
@@ -38,8 +45,6 @@ pub fn main() void {
         _ = boot_services.stall(5_000_000);
         return;
     }
-
-    graphics.clear(graphics.Color.RED);
 
     while (true) {}
 }
