@@ -52,9 +52,11 @@ pub fn clear(color: Color) void {
 }
 
 pub fn init(boot_services: *uefi.tables.BootServices) uefi.Status {
-    if (boot_services.locateProtocol(&uefi.protocols.GraphicsOutputProtocol.guid, null, @ptrCast(*?*anyopaque, &graphics)) != uefi.Status.Success) {}
-    frame_buffer = @intToPtr([*]u8, graphics.mode.frame_buffer_base);
-    frame_size.x = graphics.mode.info.horizontal_resolution;
-    frame_size.y = graphics.mode.info.vertical_resolution;
-    return uefi.Status.Success;
+    const status = boot_services.locateProtocol(&uefi.protocols.GraphicsOutputProtocol.guid, null, @ptrCast(*?*anyopaque, &graphics));
+    if (status == uefi.Status.Success) {
+        frame_buffer = @intToPtr([*]u8, graphics.mode.frame_buffer_base);
+        frame_size.x = graphics.mode.info.horizontal_resolution;
+        frame_size.y = graphics.mode.info.vertical_resolution;
+    }
+    return status;
 }
